@@ -1,0 +1,70 @@
+Prepare a prediction model for profit of 50_startups data.
+Do transformations for getting better predictions of profit and
+make a table containing R^2 value for each prepared model.
+library(readr)
+data <- read.csv(choose.files())
+View(data)
+##data preprocessing##
+introduce(data)
+##There is one discrete columns which should be converted into the continous##
+data$State=factor(data$State,
+                  levels =c('New York','California','Florida'), labels =c(1,2,3))
+View(data)
+## First business model##
+summary(data)
+##second business model##
+attach(data)
+var(R.D.Spend)##2107017150##
+var(Administration)##784997271##
+var(Marketing.Spend)##14954920097##
+var(Profit)## 1624588173##
+sd(R.D.Spend)## 45902.26##
+sd(Administration)##28017.8##
+sd(Marketing.Spend)##122290.3##
+sd(Profit)##40306.18##
+##Third business model##
+skewness(R.D.Spend)##0.1590405 the positive Skewness shows it has longer right tail##
+skewness(Administration)##  -0.4742301 the negative skewness shows it has longer left tail##
+skewness(Marketing.Spend)##  -0.04506632the negative skewness shows it has longer left tail##
+skewness(Profit)## 0.02258638the positive Skewness shows it has longer right tail##
+##fourth business model##
+kurtosis(R.D.Spend)##2.19 the positive Kurtosis shows it has higher peak and is normally distributed##
+kurtosis(Marketing.Spend)##2.27 the positive Kurtosis shows it has higher peak and is normally distributed####0.1590405 the positive Skewness shows it has longer right tail##
+kurtosis(Administration)##3.08 the positive Kurtosis shows it has higher peak and is normally distributed## 
+kurtosis(Profit)##2.82 the positive Kurtosis shows it has higher peak and is normally distributed## 
+##fifth business model##
+plot(R.D.Spend,Profit)
+plot(Marketing.Spend,Profit)
+plot(Administration,Profit)
+pairs(data)
+## we should check for muti colinarity with vif function##
+##bulding the model##
+model <- lm(Profit~ .,data=data)
+summary(model)
+## from the model we can say that the data state is insignificant##
+model1 <- lm(Profit~R.D.Spend+Marketing.Spend+Administration)
+summary(model1)
+## from the model1 we can say that administration is insignificant##
+model2 <- lm(Profit~R.D.Spend+Marketing.Spend)
+summary(model2)
+##from the model2 we can say that marketing variable p_value near to the cofidence interval we can keep are we can remove it##
+model3 <- lm(Profit~R.D.Spend)
+summary(model3)
+## we should predict from this model3##
+pred <- predict(model3)
+plot(model3)
+plot_qq(model3)
+plot_scatterplot(model3)
+
+
+
+Model name 	R^2 value
+Model	         0.9508
+
+Model1	         0.9507
+
+Model2	         0.9505
+
+Model3	         0.9465
+
+
